@@ -10,49 +10,6 @@ import toxi.math.waves.*;
 import toxi.geom.mesh.*;
 import toxi.util.*;
 import toxi.math.noise.*;
-
-/**
- * This demo shows the basic usage pattern of the Voronoi class in combination with
- * the SutherlandHodgeman polygon clipper to constrain the resulting shapes.
- *
- * Usage:
- * mouse click: add point to voronoi
- * p: toggle points
- * t: toggle triangles
- * x: clear all
- * r: add random
- * c: toggle clipping
- * h: toggle help display
- * space: save frame
- *
- * Voronoi class ported from original code by L. Paul Chew
- */
-
-/* 
- * Copyright (c) 2010 Karsten Schmidt
- * 
- * This demo & library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * http://creativecommons.org/licenses/LGPL/2.1/
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-import toxi.geom.*;
-import toxi.geom.mesh2d.*;
-
-import toxi.util.*;
-import toxi.util.datatypes.*;
-
 import toxi.processing.*;
 
 //Image for portrait
@@ -78,10 +35,10 @@ boolean doClip;
 boolean doSave;
 
 void setup() {
-  //size(643, 477);
+  //image must be same size as sketch
   size(400, 300);
   smooth();
-  //img = loadImage("portrait_test_BlackAndWhite02.png");
+  //make 400x300, grayscale before loading
   img = loadImage("kleeb.jpg");
   // focus x positions around horizontal center (w/ 33% standard deviation)
   xpos=new BiasedFloatRange(0, width, width/2, 0.333f);
@@ -91,7 +48,6 @@ void setup() {
   clip=new SutherlandHodgemanClipper(new Rect(width*0.125, height*0.125, width*0.75, height*0.75));
   gfx = new ToxiclibsSupport(this);
   textFont(createFont("SansSerif", 10));
-  
   pixelArray();
   
 }
@@ -102,9 +58,6 @@ void draw() {
   noFill();
 
 veronoiFunctions();
-  
-  
-  
 }
 
 void keyPressed() {
@@ -135,9 +88,6 @@ void keyPressed() {
   }
 }
 
-void mousePressed() {
- // voronoi.addPoint(new Vec2D(mouseX, mouseY));
-}
 
 void addPoint(int x, int y){
   
@@ -207,30 +157,20 @@ void pixelArray(){
 
 
       colorMode(HSB);
-//      if (br<50){
-//        voronoi.addPoint();
-//        //(new Vec2D(mouseX, mouseY));
-//      }
+
+
+      //This number controls the brightness threshold (0-255)
       if (br < 45) {
-        
+        //This is the percentage of points that are drawn at above threshold (5-10% is best)
         if(random(1) < 0.07){
         
         addPoint(x,y);
         println("x: " + x + ", y: " + y);
         }        
   }
-      // Image Processing would go here
-      // If we were to change the RGB values, we would do it here, before setting the pixel in the display window.
 
-      // Set the display pixel to the image pixel
-      //colorMode(HSB);
       pixels[loc] = color(h, s, br);
     }
   }
-
-  //commented out to not draw the image
- // updatePixels(); 
-
-
 
 }
