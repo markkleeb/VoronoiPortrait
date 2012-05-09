@@ -1,3 +1,4 @@
+import processing.pdf.*;
 import toxi.math.conversion.*;
 import toxi.geom.*;
 import toxi.math.*;
@@ -37,9 +38,11 @@ boolean doSave;
 void setup() {
   //image must be same size as sketch
   size(400, 300);
+  noLoop();
   smooth();
+   PGraphics pdf=beginRecord(PDF, "rune.pdf");
   //make 400x300, grayscale before loading
-  img = loadImage("kleeb.jpg");
+  img = loadImage("rune.jpg");
   // focus x positions around horizontal center (w/ 33% standard deviation)
   xpos=new BiasedFloatRange(0, width, width/2, 0.333f);
   // focus y positions around bottom (w/ 50% standard deviation)
@@ -48,22 +51,25 @@ void setup() {
   clip=new SutherlandHodgemanClipper(new Rect(width*0.125, height*0.125, width*0.75, height*0.75));
   gfx = new ToxiclibsSupport(this);
   textFont(createFont("SansSerif", 10));
-  pixelArray();
+ 
   
+//  saveFrame("voronoi-" + DateUtils.timeStamp() + ".dxm");
+
+ 
+  pixelArray();
+  //comment out the following line to see the sketch
+  gfx.setGraphics(pdf);
+  veronoiFunctions();  
+  endRecord();
+  exit();
 }
 
-void draw() {
-  background(255);
-  stroke(0);
-  noFill();
 
-veronoiFunctions();
-}
 
 void keyPressed() {
   switch(key) {
   case ' ':
-    doSave = true;
+    doSave = true;  
     break;
   case 't':
     doShowDelaunay = !doShowDelaunay;
@@ -89,11 +95,17 @@ void keyPressed() {
 }
 
 
+
 void addPoint(int x, int y){
-  
+        
          voronoi.addPoint(new Vec2D(x,y)); 
   
 }
+
+
+ 
+  
+
 
 void veronoiFunctions(){
  // draw all voronoi polygons, clip them if needed...
@@ -122,10 +134,7 @@ void veronoiFunctions(){
       ellipse(c.x, c.y, 5, 5);
     }
   }
-  if (doSave) {
-    saveFrame("voronoi-" + DateUtils.timeStamp() + ".png");
-    doSave = false;
-  }
+ 
   if (doShowHelp) {
     fill(255, 0, 0);
     text("p: toggle points", 20, 20);
@@ -136,6 +145,7 @@ void veronoiFunctions(){
     text("h: toggle help display", 20, 120);
     text("space: save frame", 20, 140);
   } 
+  
 }
 
 void pixelArray(){
@@ -160,7 +170,7 @@ void pixelArray(){
 
 
       //This number controls the brightness threshold (0-255)
-      if (br < 45) {
+      if (br < 75) {
         //This is the percentage of points that are drawn at above threshold (5-10% is best)
         if(random(1) < 0.07){
         
